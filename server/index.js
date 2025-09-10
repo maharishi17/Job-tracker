@@ -8,40 +8,33 @@ dotenv.config();
 
 const app = express();
 
-// --- Allowed origins (read from env or use safe fallbacks) ---
-const allow =
-  (process.env.ALLOW_ORIGIN
-    ? process.env.ALLOW_ORIGIN.split(",").map(s => s.trim()).filter(Boolean)
-    : []
-  ).concat([
-    // hard fallback so it works even if env is missing/mistyped
-    "https://daily-job-updater.netlify.app",
-    "http://localhost:5173",
-  ]);
+/** Allowed origins: from env + safe fallbacks */
+const allowFromEnv = process.env.ALLOW_ORIGIN
+  ? process.env.ALLOW_ORIGIN.split(",").map(s => s.trim()).filter(Boolean)
+  : [];
+const allow = Array.from(new Set([
+  ...allowFromEnv,
+  "https://daily-job-updater.netlify.app",
+  "http://localhost:5173",
+]));
 
-// Deduplicate
-const allowSet = Array.from(new Set(allow));
-
-app.use(
-  cors({
-    origin: allowSet, // cors will accept array of exact origins
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false,
-  })
-);
-// Preflight
-app.options("*", cors({ origin: allowSet }));
+// CORS (works on Express v5; no app.options('*', ...) needed)
+const corsOptions = {
+  origin(origin, cb) {
+    // allow server-to-server (no Origin) and known frontends
+    if (!origin || allow.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS: " + origin));
+  },
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// Health
-app.get("/", (_req, res) => res.send("API OK"));
-
-// Routes
+app.get("/", (_, res) => res.send("API OK"));
 app.use("/api/applications", appsRouter);
 
-// Start
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
