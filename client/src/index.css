@@ -28,3 +28,43 @@ th, td { padding: 8px; }
   body { padding: 24px; }
   th, td { padding: 12px; }
 }
+
+
+
+
+/* ===== Mobile-safe date input (Android + iOS) ===== */
+input[type="date"]{
+  background:#1f2937;              /* your dark bg */
+  color:#f9fafb;                    /* text color */
+  -webkit-text-fill-color:#f9fafb;  /* iOS value text */
+  color-scheme: dark;               /* native picker in dark */
+  caret-color:#f9fafb;
+  padding-right:36px;               /* space for icon */
+}
+
+/* Make native calendar icon visible on dark bg (Chrome/Android, iOS 16+) */
+input[type="date"]::-webkit-calendar-picker-indicator{
+  opacity:1;
+  filter: invert(1);   /* turn icon light */
+  cursor:pointer;
+}
+
+/* Ensure all date parts show in light text on iOS Safari */
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field{
+  color:#f9fafb;
+}
+
+/* Remove clear button overlap on iOS */
+input[type="date"]::-webkit-clear-button{ display:none; }
+
+/* Focus ring */
+input[type="date"]:focus{ outline:2px solid #2563eb; outline-offset:2px; }
+
+/* small-screen tweak */
+@media (max-width:640px){
+  input[type="date"]{ width:100%; }
+}
