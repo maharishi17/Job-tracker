@@ -8,39 +8,44 @@ dotenv.config();
 
 const app = express();
 
-// --- CORS: allow list from env (comma-separated) ---
-const allow = process.env.ALLOW_ORIGIN
-  ? process.env.ALLOW_ORIGIN.split(",").map(s => s.trim()).filter(Boolean)
-  : ["http://localhost:5173"]; // fallback for local dev
+// --- Allowed origins (read from env or use safe fallbacks) ---
+const allow =
+  (process.env.ALLOW_ORIGIN
+    ? process.env.ALLOW_ORIGIN.split(",").map(s => s.trim()).filter(Boolean)
+    : []
+  ).concat([
+    // hard fallback so it works even if env is missing/mistyped
+    "https://daily-job-updater.netlify.app",
+    "http://localhost:5173",
+  ]);
 
-const corsOptions = {
-  origin: (origin, cb) => {
-    // allow server-to-server / curl (no Origin) and allowed sites
-    if (!origin || allow.includes(origin)) return cb(null, true);
-    return cb(new Error("Not allowed by CORS: " + origin));
-  },
-  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
+// Deduplicate
+const allowSet = Array.from(new Set(allow));
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // handle preflight
+app.use(
+  cors({
+    origin: allowSet, // cors will accept array of exact origins
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+  })
+);
+// Preflight
+app.options("*", cors({ origin: allowSet }));
 
 app.use(express.json());
 
-// Health check
-app.get("/", (_, res) => res.send("API OK"));
+// Health
+app.get("/", (_req, res) => res.send("API OK"));
 
-// API routes
+// Routes
 app.use("/api/applications", appsRouter);
 
-// --- Mongo + Server start ---
+// Start
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     const port = process.env.PORT || 4000;
-    app.listen(port, () =>
-      console.log("Server http://localhost:" + port)
-    );
+    app.listen(port, () => console.log("Server http://localhost:" + port));
   })
   .catch(e => console.error("Mongo error:", e.message));
