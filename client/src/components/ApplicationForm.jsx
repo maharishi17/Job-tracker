@@ -23,7 +23,7 @@ export default function ApplicationForm({ onCreate }) {
   return (
     <form onSubmit={submit} style={{ display: "grid", gap: 8, marginBottom: 12 }}>
       {/* Row: company / role / status */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="field-row">
         <input
           placeholder="Company *"
           value={company}
@@ -51,32 +51,21 @@ export default function ApplicationForm({ onCreate }) {
       />
 
       {/* Row: date + submit */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {/* Date with custom calendar button (visible on mobile) */}
-        <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
+      <div className="field-row submit-row">
+        {/* Date with custom calendar button */}
+        <div className="date-field">
           <input
             id="followUpOn"
+            className="date-input"
             type="date"
             value={followUpOn}
             onChange={e => setFollowUpOn(e.target.value)}
-            style={{ width: "100%", paddingRight: 36 }}
           />
           <button
             type="button"
+            className="date-btn"
             onClick={openDatePicker}
             aria-label="Open date picker"
-            style={{
-              position: "absolute",
-              right: 8,
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "transparent",
-              border: 0,
-              padding: 4,
-              color: "#f9fafb",
-              opacity: 0.85,
-              cursor: "pointer"
-            }}
           >
             {/* simple calendar icon */}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -86,7 +75,7 @@ export default function ApplicationForm({ onCreate }) {
           </button>
         </div>
 
-        <button type="submit">Add</button>
+        <button type="submit" className="btn-submit">Add</button>
       </div>
     </form>
   );

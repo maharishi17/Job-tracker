@@ -1,70 +1,99 @@
+/* ===== Base ===== */
 * { box-sizing: border-box; font-family: Arial, sans-serif; }
 body { margin: 0; padding: 20px; background: #111827; color: #f9fafb; }
+
 input, select, textarea, button {
-  padding: 6px; border-radius: 6px; border: 1px solid #374151; background: #1f2937; color: #f9fafb;
+  padding: 6px; border-radius: 6px; border: 1px solid #374151;
+  background: #1f2937; color: #f9fafb;
 }
 button { cursor: pointer; }
-table { width: 100%; background: #1f2937; border-radius: 6px; }
+
+/* Table */
+table {
+  width: 100%; background: #1f2937; border-radius: 6px;
+  border-collapse: collapse; overflow: hidden;
+}
 th, td { padding: 8px; }
+thead th { text-align: left; }
 
+/* Helpers */
+.field-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
+/* Date field + icon button */
+.date-field { position: relative; }
+.date-input { padding-right: 36px; } /* room for custom icon on mobile */
+.date-btn{
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: transparent; border: 0; padding: 4px; color: #f9fafb; opacity: .85;
+  cursor: pointer;
+}
 
-/* Mobile (≤640px) */
+/* Submit button baseline (we enlarge on bigger screens) */
+.btn-submit { font-weight: 600; }
+
+/* ===== Responsive ===== */
+
+/* Mobile (≤640px) — use our custom icon, hide native, full width */
 @media (max-width: 640px) {
   body { padding: 12px; }
   input, select, textarea, button { width: 100%; }
   table { display: block; overflow-x: auto; }
   th, td { padding: 10px 6px; white-space: nowrap; }
+
+  .date-field { width: 100%; }
+  .date-btn { display: inline-flex; }
+  /* Hide native indicator on phones so only one icon shows (ours) */
+  input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
 }
 
-/* Laptop / Tablet (641px–1024px) */
+/* Laptop / Tablet (641–1024px) — hide our icon, keep native, compact date, bigger Add */
 @media (min-width: 641px) and (max-width: 1024px) {
   body { padding: 16px; }
   th, td { padding: 10px; }
+
+  .submit-row { align-items: center; }
+  .date-btn { display: none; }             /* avoid double icons */
+  #followUpOn.date-input {
+    width: 220px; max-width: 220px;        /* compact date box */
+    padding-right: 10px;                   /* no extra space since custom icon hidden */
+  }
+  .btn-submit {
+    padding: 10px 20px; font-size: 15px; min-height: 42px; min-width: 150px; font-weight: 700;
+  }
 }
 
-/* Desktop (≥1025px) */
+/* Desktop (≥1025px) — hide our icon, keep native, compact date, even bigger Add */
 @media (min-width: 1025px) {
   body { padding: 24px; }
   th, td { padding: 12px; }
+
+  .submit-row { align-items: center; }
+  .date-btn { display: none; }             /* avoid double icons */
+  #followUpOn.date-input {
+    width: 220px; max-width: 220px;
+    padding-right: 10px;
+  }
+  .btn-submit {
+    padding: 12px 24px; font-size: 16px; min-height: 46px; min-width: 170px; font-weight: 700;
+  }
 }
-
-
-
 
 /* ===== Mobile-safe date input (Android + iOS) ===== */
 input[type="date"]{
-  background:#1f2937;              /* your dark bg */
-  color:#f9fafb;                    /* text color */
-  -webkit-text-fill-color:#f9fafb;  /* iOS value text */
-  color-scheme: dark;               /* native picker in dark */
-  caret-color:#f9fafb;
-  padding-right:36px;               /* space for icon */
+  background:#1f2937; color:#f9fafb; -webkit-text-fill-color:#f9fafb;
+  color-scheme: dark; caret-color:#f9fafb;
 }
-
-/* Make native calendar icon visible on dark bg (Chrome/Android, iOS 16+) */
-input[type="date"]::-webkit-calendar-picker-indicator{
-  opacity:1;
-  filter: invert(1);   /* turn icon light */
-  cursor:pointer;
-}
-
-/* Ensure all date parts show in light text on iOS Safari */
 input[type="date"]::-webkit-datetime-edit,
 input[type="date"]::-webkit-datetime-edit-text,
 input[type="date"]::-webkit-datetime-edit-month-field,
 input[type="date"]::-webkit-datetime-edit-day-field,
-input[type="date"]::-webkit-datetime-edit-year-field{
-  color:#f9fafb;
-}
-
-/* Remove clear button overlap on iOS */
+input[type="date"]::-webkit-datetime-edit-year-field{ color:#f9fafb; }
 input[type="date"]::-webkit-clear-button{ display:none; }
-
-/* Focus ring */
 input[type="date"]:focus{ outline:2px solid #2563eb; outline-offset:2px; }
 
-/* small-screen tweak */
-@media (max-width:640px){
-  input[type="date"]{ width:100%; }
+/* On non-mobile, keep native indicator visible (we hid custom) */
+@media (min-width: 641px){
+  input[type="date"]::-webkit-calendar-picker-indicator{
+    opacity: 1; filter: invert(1); cursor: pointer;
+  }
 }
