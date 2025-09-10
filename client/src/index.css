@@ -1,4 +1,6 @@
-/* ===== Base ===== */
+/* =========================
+   Base
+========================= */
 * { box-sizing: border-box; font-family: Arial, sans-serif; }
 body { margin: 0; padding: 20px; background: #111827; color: #f9fafb; }
 
@@ -19,66 +21,83 @@ thead th { text-align: left; }
 /* Helpers */
 .field-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-/* Date field + icon button */
+/* Date field + our icon */
 .date-field { position: relative; }
-.date-input { padding-right: 36px; } /* room for custom icon on mobile */
+.date-input { padding-right: 36px; }       /* room for icon (mobile adjusts below) */
 .date-btn{
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-  background: transparent; border: 0; padding: 4px; color: #f9fafb; opacity: .85;
-  cursor: pointer;
+  background: transparent; border: 0; padding: 4px;
+  color: #f9fafb; opacity: .85; cursor: pointer;
 }
-
-/* Submit button baseline (we enlarge on bigger screens) */
 .btn-submit { font-weight: 600; }
 
-/* ===== Responsive ===== */
+/* =========================
+   Responsive
+========================= */
 
-/* Mobile (≤640px) — use our custom icon, hide native, full width */
+/* Mobile (≤640px): one icon (OURS) INSIDE the input */
 @media (max-width: 640px) {
   body { padding: 12px; }
   input, select, textarea, button { width: 100%; }
   table { display: block; overflow-x: auto; }
   th, td { padding: 10px 6px; white-space: nowrap; }
 
-  .date-field { width: 100%; }
-  .date-btn { display: inline-flex; }
-  /* Hide native indicator on phones so only one icon shows (ours) */
-  input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
+  .date-field{ width: 100%; position: relative; }
+  /* Hide native indicator so we show only our custom icon on phones */
+  input[type="date"]::-webkit-calendar-picker-indicator{ display: none !important; }
+
+  /* Put our icon fully inside the input box */
+  .date-input, #followUpOn{
+    width: 100%;
+    padding-right: 44px !important;      /* extra space for the icon */
+  }
+  .date-btn{
+    right: 6px; top: 1px; bottom: 1px;   /* stretch inside the input’s borders */
+    transform: none; width: 34px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+  }
+  .date-btn svg{ width: 18px; height: 18px; }
+
+  /* Full-width Add on phones */
+  .btn-submit { width: 100%; }
 }
 
-/* Laptop / Tablet (641–1024px) — hide our icon, keep native, compact date, bigger Add */
+/* Laptop / Tablet (641–1024px): hide our icon, keep native; small date, bigger Add */
 @media (min-width: 641px) and (max-width: 1024px) {
   body { padding: 16px; }
   th, td { padding: 10px; }
 
   .submit-row { align-items: center; }
-  .date-btn { display: none; }             /* avoid double icons */
-  #followUpOn.date-input {
-    width: 220px; max-width: 220px;        /* compact date box */
-    padding-right: 10px;                   /* no extra space since custom icon hidden */
+  .date-btn { display: none; }                 /* avoid double icons */
+  #followUpOn.date-input{
+    width: 220px; max-width: 220px; padding-right: 10px;
   }
-  .btn-submit {
-    padding: 10px 20px; font-size: 15px; min-height: 42px; min-width: 150px; font-weight: 700;
+  .btn-submit{
+    padding: 10px 20px; font-size: 15px;
+    min-height: 42px; min-width: 150px; font-weight: 700;
   }
 }
 
-/* Desktop (≥1025px) — hide our icon, keep native, compact date, even bigger Add */
+/* Desktop (≥1025px): hide our icon, keep native; small date, biggest Add */
 @media (min-width: 1025px) {
   body { padding: 24px; }
   th, td { padding: 12px; }
 
   .submit-row { align-items: center; }
-  .date-btn { display: none; }             /* avoid double icons */
-  #followUpOn.date-input {
-    width: 220px; max-width: 220px;
-    padding-right: 10px;
+  .date-btn { display: none; }                 /* avoid double icons */
+  #followUpOn.date-input{
+    width: 220px; max-width: 220px; padding-right: 10px;
   }
-  .btn-submit {
-    padding: 12px 24px; font-size: 16px; min-height: 46px; min-width: 170px; font-weight: 700;
+  .btn-submit{
+    padding: 12px 24px; font-size: 16px;
+    min-height: 46px; min-width: 170px; font-weight: 700;
   }
 }
 
-/* ===== Mobile-safe date input (Android + iOS) ===== */
+/* =========================
+   Mobile-safe date input (Android + iOS)
+========================= */
 input[type="date"]{
   background:#1f2937; color:#f9fafb; -webkit-text-fill-color:#f9fafb;
   color-scheme: dark; caret-color:#f9fafb;
@@ -91,7 +110,7 @@ input[type="date"]::-webkit-datetime-edit-year-field{ color:#f9fafb; }
 input[type="date"]::-webkit-clear-button{ display:none; }
 input[type="date"]:focus{ outline:2px solid #2563eb; outline-offset:2px; }
 
-/* On non-mobile, keep native indicator visible (we hid custom) */
+/* On non-mobile, keep native indicator visible (we hid custom icon there) */
 @media (min-width: 641px){
   input[type="date"]::-webkit-calendar-picker-indicator{
     opacity: 1; filter: invert(1); cursor: pointer;
