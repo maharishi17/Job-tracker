@@ -6,3 +6,25 @@ input, select, textarea, button {
 button { cursor: pointer; }
 table { width: 100%; background: #1f2937; border-radius: 6px; }
 th, td { padding: 8px; }
+
+
+
+/* Mobile (≤640px) */
+@media (max-width: 640px) {
+  body { padding: 12px; }
+  input, select, textarea, button { width: 100%; }
+  table { display: block; overflow-x: auto; }
+  th, td { padding: 10px 6px; white-space: nowrap; }
+}
+
+/* Laptop / Tablet (641px–1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  body { padding: 16px; }
+  th, td { padding: 10px; }
+}
+
+/* Desktop (≥1025px) */
+@media (min-width: 1025px) {
+  body { padding: 24px; }
+  th, td { padding: 12px; }
+}
