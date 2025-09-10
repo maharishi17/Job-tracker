@@ -1,0 +1,8 @@
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+body { margin: 0; padding: 20px; background: #111827; color: #f9fafb; }
+input, select, textarea, button {
+  padding: 6px; border-radius: 6px; border: 1px solid #374151; background: #1f2937; color: #f9fafb;
+}
+button { cursor: pointer; }
+table { width: 100%; background: #1f2937; border-radius: 6px; }
+th, td { padding: 8px; }
